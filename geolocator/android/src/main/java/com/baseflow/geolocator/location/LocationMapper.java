@@ -1,13 +1,13 @@
 package com.baseflow.geolocator.location;
 
-import android.location.Location;
 import android.os.Build;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class LocationMapper {
-  public static Map<String, Object> toHashMap(Location location) {
+  @SuppressWarnings("deprecation")
+  public static Map<String, Object> toHashMap(android.location.Location location) {
     if (location == null) {
       return null;
     }
@@ -26,8 +26,10 @@ public class LocationMapper {
       position.put("speed_accuracy", (double) location.getSpeedAccuracyMetersPerSecond());
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+      //@SuppressWarnings("deprecation")
       position.put("is_mocked", location.isFromMockProvider());
     } else {
+      //@SuppressWarnings("deprecation")
       position.put("is_mocked", false);
     }
 

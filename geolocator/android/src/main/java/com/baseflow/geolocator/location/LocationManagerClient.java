@@ -4,10 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.location.Criteria;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Looper;
 
@@ -29,7 +27,8 @@ class LocationManagerClient implements LocationClient, LocationListener {
 
   private boolean isListening = false;
 
-  @Nullable private Location currentBestLocation;
+  @SuppressWarnings("deprecation")
+  @Nullable private android.location.Location currentBestLocation;
   @Nullable private String currentLocationProvider;
   @Nullable private PositionChangedCallback positionChangedCallback;
   @Nullable private ErrorCallback errorCallback;
@@ -54,11 +53,13 @@ class LocationManagerClient implements LocationClient, LocationListener {
   @Override
   public void getLastKnownPosition(
       PositionChangedCallback positionChangedCallback, ErrorCallback errorCallback) {
-    Location bestLocation = null;
+    @SuppressWarnings("deprecation")
+    android.location.Location bestLocation = null;
 
     for (String provider : locationManager.getProviders(true)) {
       @SuppressLint("MissingPermission")
-      Location location = locationManager.getLastKnownLocation(provider);
+      @SuppressWarnings("deprecation")
+      android.location.Location location = locationManager.getLastKnownLocation(provider);
 
       if (location != null && isBetterLocation(location, bestLocation)) {
         bestLocation = location;
@@ -118,7 +119,8 @@ class LocationManagerClient implements LocationClient, LocationListener {
   }
 
   @Override
-  public synchronized void onLocationChanged(Location location) {
+  @SuppressWarnings("deprecation")
+  public synchronized void onLocationChanged(android.location.Location location) {
     float desiredAccuracy =
         locationOptions != null ? accuracyToFloat(locationOptions.getAccuracy()) : 50;
 
@@ -135,9 +137,9 @@ class LocationManagerClient implements LocationClient, LocationListener {
   @SuppressWarnings("deprecation")
   @Override
   public void onStatusChanged(String provider, int status, Bundle extras) {
-    if (status == LocationProvider.AVAILABLE) {
+    if (status == android.location.LocationProvider.AVAILABLE) {
       onProviderEnabled(provider);
-    } else if (status == LocationProvider.OUT_OF_SERVICE) {
+    } else if (status == android.location.LocationProvider.OUT_OF_SERVICE) {
       onProviderDisabled(provider);
     }
   }
@@ -161,7 +163,8 @@ class LocationManagerClient implements LocationClient, LocationListener {
     }
   }
 
-  static boolean isBetterLocation(Location location, Location bestLocation) {
+  @SuppressWarnings("deprecation")
+  static boolean isBetterLocation(android.location.Location location, android.location.Location bestLocation) {
     if (bestLocation == null) return true;
 
     long timeDelta = location.getTime() - bestLocation.getTime();
